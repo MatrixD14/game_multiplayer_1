@@ -1,5 +1,5 @@
 public class handleProtocolo {
-   public void handleRot(String txt,int myId,float[][] rotCache,int[] remoteId,int maxPlayer){
+   public void handleRot(String txt,int myId,Vector3Buffer rotBufferCache,int[] remoteId,int maxPlayer){
      String[] p = txt.split(":");
     int id = Integer.parseInt(p[1]);
     if (id == myId) return;
@@ -9,14 +9,12 @@ public class handleProtocolo {
 
     for (int i = 0; i < maxPlayer; i++) {
       if (remoteId[i] == id) {
-        rotCache[i][0] = x;
-        rotCache[i][1] = y;
-        rotCache[i][2] = z;
+        rotBufferCache.set(i,x,y, z);
         break;
       }
     }
   } 
-  public void handlePos(String txt,int myId,float[][] posCache,int[] remoteId,int maxPlayer){
+  public void handlePos(String txt,int myId,Vector3Buffer posBufferCache,int[] remoteId,int maxPlayer){
      String[] p = txt.split(":");
     int id = Integer.parseInt(p[1]);
     if (id == myId) return;
@@ -26,9 +24,7 @@ public class handleProtocolo {
 
     for (int i = 0; i < maxPlayer; i++) {
       if (remoteId[i] == id) {
-        posCache[i][0] = x;
-        posCache[i][1] = y;
-        posCache[i][2] = z;
+        posBufferCache.set(i,x,y, z);
         break;
       }
     }
