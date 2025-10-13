@@ -3,7 +3,7 @@ import java.net.Socket;
 public class server1 extends Component {
   private int port = 5000, maxPlayer = 10;
   ServerSocket server;
-  volatile boolean running = false, checktrue = false;
+  @Hide public volatile boolean running = false, checktrue = false;
   private Socket[] clients = new Socket[maxPlayer];
   private int[] clientId = new int[maxPlayer];
   private String[] clientName = new String[maxPlayer];
@@ -114,19 +114,23 @@ public class server1 extends Component {
         if (line.startsWith("join:")) {
           String nome = line.substring(5);
           clientName[slot] = nome;
-          sendClient(client, "id:" + clientId[slot]);
+          StringBuilder sbId = new StringBuilder(64);
+          sbId.append("id:").append(clientId[slot]);
+          sendClient(client, sbId.toString());
           for (int i = 0; i < maxPlayer; i++) {
             if (clients[slot] != null && i != slot && clientId[i] != 0 && clientName[i] != null) {
-              String exists = "spaw:" + clientId[i] + ":" + clientName[i] + ":0:1:0";
-              sendClient(client, exists);
+              StringBuilder exists = new StringBuilder(64);
+              exists.append("spaw:").append(clientId[i]).append(":").append(clientName[i]).append(":0:1:0");
+              sendClient(client, exists.toString());
             }
           }
-          String spaw = "spaw:" + clientId[slot] + ":" + nome + ":0:1:0";
-          broadcast(spaw, client);
-        } else if(line.startsWith("pos:")|| line.startsWith("rot")) broadcast(line, client);
+          StringBuilder spaw = new StringBuilder(64);
+          spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
+          broadcast(spaw.toString(), client);
+        } else if (line.startsWith("pos:") || line.startsWith("rot")) broadcast(line, client);
         else if (!line.startsWith("join:")) broadcast(line, client);
         broadcast(line, client);
-      } 
+      }
     } catch (Exception e) {
       Console.log("Erro client: " + e.getMessage());
     } finally {
@@ -143,12 +147,13 @@ public class server1 extends Component {
   }
 
   private synchronized void broadcast(String msg, Socket sender) {
-    String full = msg + "\n";
+    StringBuilder full = new StringBuilder(msg.length() + 1);
+    full.append(msg).append("\n");
     byte[] data;
     try {
-      data = full.getBytes("UTF-8");
+      data = full.toString().getBytes("UTF-8");
     } catch (Exception e) {
-      data = full.getBytes();
+      data = full.toString().getBytes();
     }
     for (int i = 0; i < maxPlayer; i++) {
       Socket s = clients[i];
@@ -179,10 +184,12 @@ public class server1 extends Component {
 
   private void sendClient(Socket s, String msg) {
     try {
+      StringBuilder sb = new StringBuilder(msg.length() + 1);
+      sb.append(msg).append("\n");
       OutputStream out = s.getOutputStream();
-      out.write((msg + "\n").getBytes("UTF-8"));
+      out.write(sb.toString().getBytes("UTF-8"));
       out.flush();
     } catch (Exception e) {
-    }
+    } 
   }
 }
