@@ -127,9 +127,8 @@ public class server1 extends Component {
           spaw.setLength(0);
           spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
           broadcast(spaw.toString(), client);
-        } else if (line.startsWith("pos:") || line.startsWith("rot")) broadcast(line, client);
-        else if (!line.startsWith("join:")) broadcast(line, client);
-        else if (!line.startsWith("anim:")) broadcast(line, client);
+        } else if (line.startsWith("pos:") || line.startsWith("rot:")) broadcast(line, client);
+        else broadcast(line, client);
       } 
     } catch (Exception e) {
       Console.log("Erro client: " + e.getMessage());
