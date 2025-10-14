@@ -2,19 +2,25 @@ public class moveVision extends Component {
   private Vector2 joy;
   private float speedJ = 2;
   private float x, y;
-  public Texture[] spaits = new Texture[12];
+  public Texture[] spaits = new Texture[10];
   private ModelRenderer model;
+  private SpatialObject obj;
   private int anim = 0, AnimFC = 0;
   private float FrameTime = 0, delay = .15f;
+  private int mvSkin = 0;
+  private int CurrentAnim = 0;
+  private boolean Move = false;
 
   void start() {
     joy = Input.getAxisValue("joy");
-    model = WorldController.findObject("model").findComponent("ModelRenderer");
-    spaits[10] = rotTexture(spaits[8]);
-    spaits[11] = rotTexture(spaits[9]);
+    obj = myObject.findChildObject("model");
+    model = obj.findComponent("ModelRenderer");
   }
 
   void repeat() {
+    if (Input.isKeyDown("mvSkin")) mvSkin++;
+    if (mvSkin >= spaits.length) mvSkin = 0;
+    model.material.setAlbedo(spaits[mvSkin]);
     if (key("w") || key("s") || key("a") || key("d")) {
       movekey();
     } else move(joy.x * speedJ, joy.y * speedJ);
@@ -41,48 +47,62 @@ public class moveVision extends Component {
   }
 
   private void animation(float x, float y) {
-    if (x == 0 && y == 0) {
-      model.material.setAlbedo(spaits[AnimFC]);
+    Move = !(Math.abs(x) < 0.0001f && Math.abs(y) < 0.0001f);
+    if (!Move) {
+      anim = 0;
+      atlas(anim, AnimFC);
+      CurrentAnim = anim;
       return;
     }
     FrameTime += Time.deltatime();
     if (FrameTime >= delay) {
       FrameTime = 0;
-      if ((anim++) >= 3) anim = 0;
+      if ((anim++) >= 2) anim = 0;
     }
     if (Math.abs(y) > Math.abs(x)) {
-      if (y > 0) {
-        AnimFC = 0;
-        model.material.setAlbedo(spaits[(anim == 0) ? 4 : (anim == 1) ? 0 : 5]);
-      } else {
-        AnimFC = 1;
-        model.material.setAlbedo(spaits[(anim == 0) ? 6 : (anim == 1) ? 1 : 7]);
-      }
+      AnimFC = (y > 0) ? 0 : 1;
     } else {
-      if (x < 0) {
-        AnimFC = 2;
-        model.material.setAlbedo(spaits[(anim == 0) ? 8 : (anim == 1) ? 2 : 9]);
-      } else if (x > 0) {
-        AnimFC = 3;
-        model.material.setAlbedo(spaits[(anim == 0) ? 10 : (anim == 1) ? 3 : 11]);
+      AnimFC = 2;
+      if (x < 0) obj.setScale(1, 1, 1);
+      else if (x > 0) obj.setScale(-1f, 1, 1);
+    } 
+    atlas(anim, AnimFC);
+    CurrentAnim = anim;
+  }
+
+  public void atlas(int x, int y) {
+    model.material.setVector2("AlbedoOffset", new Vector2(x * .329f, y * .3348f));
+    model.material.setVector2("AlbedoTilling", new Vector2(0.333333f, .333333f));
+  }
+
+  public int getCurrentAnim() {
+    return CurrentAnim;
+  }
+
+  public int getAnimFC() {
+    return AnimFC;
+  }
+
+  public boolean getMove() {
+    return Move;
+  }
+  /*
+  float shakeAmount = .15f, times = 0;
+  public boolean onoff = true;
+
+  private void shake(float value) {
+    if (!onoff) return;
+    Vector3 mypos = obj.position.copy();
+    if (onoff) {
+      times += 0.01f;
+      float offsetX = (float) Random.range(-shakeAmount, shakeAmount);
+      float offsetZ = (float) Random.range(-shakeAmount, shakeAmount);
+      obj.setPosition(mypos.x + offsetX, mypos.y, mypos.z + offsetZ);
+      if (times > value) {
+        obj.setPosition(mypos);
+        onoff = false;
+        times = 0;
       }
     }
-  }
-  private Texture rotTexture(Texture t) {
-    if (t == null) return Texture.White();
-    int w = t.getWidth();
-    int h = t.getHeight();
-    Texture rot = new Texture(w, h, true);
-
-    for (int x = 0; x < w; x++) {
-      for (int y = 0; y < h; y++) {
-        Color c = t.getPixel(x, y);
-        rot.set(w - 1 - x, y, c);
-      } 
-    }
-    rot.apply();
-    rot.mipmapEnabled = false;
-    // rot.setFilter("Pixel");
-    return rot;
-  }
-}
+  }*/
+} // 0.329f
