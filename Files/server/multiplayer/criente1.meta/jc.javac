@@ -5,19 +5,25 @@ import java.io.OutputStream;
 public class criente1 extends Component {
   private String host = "", msg = "", nome;
   private int port = 5000, maxPlayer = 10, myId = 0;
-  Socket socket;
+  private Socket socket;
   private volatile boolean connected = false;
   private SpatialObject localPlayer;
   public ObjectFile localplay, amigo;
+
   private int[] remoteId;
   private String[] remoteName;
   private SpatialObject[] remotePlay;
   private Vector3Buffer posCache, rotCache, posBufferCache, rotBufferCache;
+  private IntBuffer animCache, animBufferCache, DirCache, DirBufferCache, moveCache, moveBufferCache;
   private Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
   private SUIText txt;
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
+  private animAmigo animat;
+  private moveVision player;
+
+  public Texture[] sprites = new Texture[3];
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -26,10 +32,17 @@ public class criente1 extends Component {
     remotePlay = new SpatialObject[maxPlayer];
     posCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotCache = BufferUtils.createVector3Buffer(maxPlayer);
+    animCache = BufferUtils.createIntBuffer(maxPlayer);
+    DirCache = BufferUtils.createIntBuffer(maxPlayer);
+    moveCache = BufferUtils.createIntBuffer(maxPlayer);
     posBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
+    animBufferCache = BufferUtils.createIntBuffer(maxPlayer);
+    DirBufferCache = BufferUtils.createIntBuffer(maxPlayer);
+    moveBufferCache = BufferUtils.createIntBuffer(maxPlayer);
     txt = WorldController.findObject("Ip").findComponent("suitext");
     checkServe = myObject.findComponent("server1");
+    animat = new animAmigo(maxPlayer);
   }
 
   void repeat() {
@@ -41,7 +54,11 @@ public class criente1 extends Component {
         float rx = rotCache.getX(i), ry = rotCache.getY(i), rz = rotCache.getZ(i);
         remotePlay[i].setPosition(px, py, pz);
         remotePlay[i].setRotation(rx, ry, rz);
-      }
+        int anim = animCache.get(i);
+        int dir = DirBufferCache.get(i);
+        boolean move = moveBufferCache.get(i) != 0;
+        animat.PlayAnimation(remotePlay[i], sprites[0], dir, i, move, anim);
+      } 
     }
     swap();
     if (Input.isKeyDown("serv") && !checkServe.running) {
@@ -167,24 +184,25 @@ public class criente1 extends Component {
               localPlayer.setPosition(0, 1, 0);
               localPlayer.setName(nome);
             }
+            if (player == null) player = localPlayer.findComponent("moveVision");
             new AsyncTask(
                 new AsyncRunnable() {
                   public Object onBackground(Object input) {
                     try {
                       StringBuilder sb = new StringBuilder();
+                      OutputStream out = socket.getOutputStream();
                       while (connected && socket != null && !socket.isClosed()) {
                         sb.setLength(0);
                         Vector3 pos = localPlayer.getPosition();
                         Quaternion rot = localPlayer.getRotation();
+                        int curret = (player != null) ? player.getCurrentAnim() : 0, animfc = (player != null) ? player.getAnimFC() : 0, move = (player != null && player.getMove()) ? 1 : 0;
                         sb.append("pos:").append(myId).append(':').append(pos.x).append(':').append(pos.y).append(':').append(pos.z).append('\n');
                         sb.append("rot:").append(myId).append(':').append(rot.x).append(':').append(rot.y).append(':').append(rot.z).append('\n');
-                        OutputStream out = socket.getOutputStream();
-                        // out.write((posMsg + "\n").getBytes("UTF-8"));
-                        // out.write((rotMsg + "\n").getBytes("UTF-8"));
+                        sb.append("anim:").append(myId).append(':').append(curret).append(':').append(animfc).append(':').append(move).append('\n');
                         out.write(sb.toString().getBytes("UTF-8"));
                         out.flush();
                         Thread.sleep(50);
-                      } 
+                      }
                     } catch (Exception e) {
                       desconnect();
                     }
@@ -203,6 +221,8 @@ public class criente1 extends Component {
       protocolo.handleRot(txt, myId, rotCache, remoteId, maxPlayer);
     } else if (txt.startsWith("left:")) {
       handleLeft(txt);
+    } else if (txt.startsWith("anim:")) {
+      protocolo.handleAnim(txt, myId, animCache, DirCache, moveCache, remoteId, maxPlayer);
     } else {
       Toast.showText(txt, 1);
       Console.log(txt);
@@ -272,9 +292,21 @@ public class criente1 extends Component {
 
   private void swap() {
     Vector3Buffer tmpPos = posCache, tmpRot = rotCache;
+    IntBuffer tmpanim = animCache, tmpDir = DirCache, tmpmove = moveCache;
+
     posCache = posBufferCache;
     posBufferCache = tmpPos;
+
     rotCache = rotBufferCache;
     rotBufferCache = tmpRot;
+
+    animCache = animBufferCache;
+    animBufferCache = tmpanim;
+
+    DirCache = DirBufferCache;
+    DirBufferCache = tmpDir;
+
+    moveCache = moveBufferCache;
+    moveBufferCache = tmpmove;
   }
 }
