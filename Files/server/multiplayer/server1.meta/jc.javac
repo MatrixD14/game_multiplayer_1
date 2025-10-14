@@ -109,28 +109,28 @@ public class server1 extends Component {
     try {
       BufferedReader rend = new BufferedReader(new InputStreamReader(client.getInputStream(), "UTF-8"));
       String line;
-
+      StringBuilder sbId = new StringBuilder(64), exists = new StringBuilder(64), spaw = new StringBuilder(64);
       while (running && !client.isClosed() && (line = rend.readLine()) != null) {
         if (line.startsWith("join:")) {
+          sbId.setLength(0);
           String nome = line.substring(5);
           clientName[slot] = nome;
-          StringBuilder sbId = new StringBuilder(64);
           sbId.append("id:").append(clientId[slot]);
           sendClient(client, sbId.toString());
           for (int i = 0; i < maxPlayer; i++) {
             if (clients[slot] != null && i != slot && clientId[i] != 0 && clientName[i] != null) {
-              StringBuilder exists = new StringBuilder(64);
+              exists.setLength(0);
               exists.append("spaw:").append(clientId[i]).append(":").append(clientName[i]).append(":0:1:0");
               sendClient(client, exists.toString());
             }
           }
-          StringBuilder spaw = new StringBuilder(64);
+          spaw.setLength(0);
           spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
           broadcast(spaw.toString(), client);
         } else if (line.startsWith("pos:") || line.startsWith("rot")) broadcast(line, client);
         else if (!line.startsWith("join:")) broadcast(line, client);
-        broadcast(line, client);
-      }
+        else if (!line.startsWith("anim:")) broadcast(line, client);
+      } 
     } catch (Exception e) {
       Console.log("Erro client: " + e.getMessage());
     } finally {
@@ -190,6 +190,6 @@ public class server1 extends Component {
       out.write(sb.toString().getBytes("UTF-8"));
       out.flush();
     } catch (Exception e) {
-    } 
+    }
   }
 }
