@@ -8,7 +8,6 @@ public class moveVision extends Component {
   private int anim = 0, AnimFC = 0;
   private float FrameTime = 0, delay = .15f;
   private int mvSkin = 0;
-  private int CurrentAnim = 0;
   private boolean Move = false;
 
   void start() {
@@ -49,9 +48,7 @@ public class moveVision extends Component {
   private void animation(float x, float y) {
     Move = !(Math.abs(x) < 0.0001f && Math.abs(y) < 0.0001f);
     if (!Move) {
-      anim = 0;
       atlas(anim, AnimFC);
-      CurrentAnim = anim;
       return;
     }
     FrameTime += Time.deltatime();
@@ -67,16 +64,11 @@ public class moveVision extends Component {
       else if (x > 0) obj.setScale(-1f, 1, 1);
     } 
     atlas(anim, AnimFC);
-    CurrentAnim = anim;
   }
 
   public void atlas(int x, int y) {
     model.material.setVector2("AlbedoOffset", new Vector2(x * .329f, y * .3348f));
     model.material.setVector2("AlbedoTilling", new Vector2(0.333333f, .333333f));
-  }
-
-  public int getCurrentAnim() {
-    return CurrentAnim;
   }
 
   public int getAnimFC() {
