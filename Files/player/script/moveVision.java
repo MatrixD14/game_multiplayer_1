@@ -75,8 +75,8 @@ public class moveVision extends Component {
     return AnimFC;
   }
 
-  public boolean getMove() {
-    return Move;
+  public int getAnim() {
+    return anim;
   }
   /*
   float shakeAmount = .15f, times = 0;
