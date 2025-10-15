@@ -21,8 +21,10 @@ public class moveVision extends Component {
     model.material.setAlbedo(spaits[mvSkin]);
     if (key("w") || key("s") || key("a") || key("d")) {
       movekey();
-    } else move(joy.x * speedJ, joy.y * speedJ);
-    animation(joy.x * speedJ, joy.y * speedJ);
+    } else {
+      move(joy.x * speedJ, joy.y * speedJ);
+      animation(joy.x * speedJ, joy.y * speedJ);
+    } 
   }
 
   private void movekey() {
@@ -31,7 +33,8 @@ public class moveVision extends Component {
     if (key("s")) y = -1;
     if (key("a")) x = -1;
     if (key("d")) x = +1;
-    move(x * speedJ, y * speedJ);
+    move(x * speedJ, -y * speedJ);
+    animation(x * speedJ, -y * speedJ);
   }
 
   private boolean key(String key) {
@@ -49,7 +52,7 @@ public class moveVision extends Component {
       anim = 0;
       atlas(0, AnimFC);
       return;
-    } 
+    }
     FrameTime += Time.deltatime();
     if (FrameTime >= delay) {
       FrameTime = 0;
