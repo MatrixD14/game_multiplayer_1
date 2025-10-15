@@ -1,19 +1,12 @@
-public class animAmigo {
-  private int maxPlayer;
-
-  public animAmigo(int Maxplayer) {
-    this.maxPlayer = Maxplayer;
-  }
-
-  public void PlayAnimation(SpatialObject obj, Texture sprite, int animY, int id, boolean isMove, int frame) {
+public class animAmigo {    
+  public void PlayAnimation(SpatialObject obj, Texture sprite, int animX, int animY) {
     if (obj == null || sprite == null) return;
     ModelRenderer model = obj.findComponent("ModelRenderer");
     if (model != null && model.material != null) {
       model.material.setAlbedo(sprite);
-      if (isMove) atlas(model, frame, animY);
-      else atlas(model, 0, animY);
-    }
-  } 
+      atlas(model, animX, animY);
+    } 
+  }
 
   private void atlas(ModelRenderer model, int x, int y) {
     model.material.setVector2("AlbedoOffset", new Vector2(x * .329f, y * .3348f));
