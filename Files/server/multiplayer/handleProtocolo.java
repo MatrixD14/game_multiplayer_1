@@ -29,5 +29,21 @@ public class handleProtocolo {
         break;
       }
     }
-  } 
+  }
+
+  public void handleAnim(String txt, int myId, IntBuffer animBufferCache, IntBuffer dirBufferCache, int[] remoteId, int maxPlayer) {
+    String[] p = txt.split(":");
+    int id = Integer.parseInt(p[1]);
+    if (id == myId) return;
+    int anim = Integer.parseInt(p[2]);
+    int dir = Integer.parseInt(p[3]);
+
+    for (int i = 0; i < maxPlayer; i++) {
+      if (remoteId[i] == id) {
+        animBufferCache.put(i, anim);
+        dirBufferCache.put(i, dir);
+        break;
+      } 
+    }
+  }
 }
