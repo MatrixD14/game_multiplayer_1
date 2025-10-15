@@ -14,6 +14,7 @@ public class criente1 extends Component {
   private String[] remoteName;
   private SpatialObject[] remotePlay;
   private Vector3Buffer posCache, rotCache, posBufferCache, rotBufferCache;
+  private IntBuffer animCache, dirCache, animBufferCache, dirBufferCache;
   private Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
   private SUIText txt;
@@ -27,8 +28,12 @@ public class criente1 extends Component {
     remotePlay = new SpatialObject[maxPlayer];
     posCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotCache = BufferUtils.createVector3Buffer(maxPlayer);
+    animCache = BufferUtils.createIntBuffer(maxPlayer);
+    dirCache = BufferUtils.createIntBuffer(maxPlayer);
     posBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
+    animBufferCache = BufferUtils.createIntBuffer(maxPlayer);
+    dirBufferCache = BufferUtils.createIntBuffer(maxPlayer);
     txt = WorldController.findObject("Ip").findComponent("suitext");
     checkServe = myObject.findComponent("server1");
   }
@@ -42,6 +47,8 @@ public class criente1 extends Component {
         float rx = rotCache.getX(i), ry = rotCache.getY(i), rz = rotCache.getZ(i);
         remotePlay[i].setPosition(px, py, pz);
         remotePlay[i].setRotation(rx, ry, rz);
+        moveVision mv = remotePlay[i].findComponent("moveVision");
+        if (mv != null) mv.atlas(animCache.get(i), dirCache.get(i));
       }
     }
     swap();
@@ -167,7 +174,7 @@ public class criente1 extends Component {
               localPlayer = myObject.instantiate(localplay);
               localPlayer.setPosition(0, 1, 0);
               localPlayer.setName(nome);
-            } 
+            }
             new AsyncTask(
                 new AsyncRunnable() {
                   public Object onBackground(Object input) {
@@ -178,8 +185,15 @@ public class criente1 extends Component {
                         sb.setLength(0);
                         Vector3 pos = localPlayer.getPosition();
                         Quaternion rot = localPlayer.getRotation();
+                        moveVision mv = localPlayer.findComponent("moveVision");
+                        int anim = 0, dir = 0;
+                        if (mv != null) {
+                          anim = mv.getAnim();
+                          dir = mv.getAnimFC();
+                        } 
                         sb.append("pos:").append(myId).append(":").append(pos.x).append(":").append(pos.y).append(":").append(pos.z).append("\n");
                         sb.append("rot:").append(myId).append(":").append(rot.x).append(":").append(rot.y).append(":").append(rot.z).append("\n");
+                        sb.append("anim:").append(myId).append(":").append(anim).append(":").append(dir).append("\n");
                         out.write(sb.toString().getBytes("UTF-8"));
                         out.flush();
                         Thread.sleep(50);
