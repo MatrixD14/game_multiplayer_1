@@ -1,0 +1,128 @@
+package JAVARuntime;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
+import java.util.concurrent.locks.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import java.util.zip.*;
+import java.text.*;
+import java.net.*;
+import java.math.*;
+import java.io.*;
+import java.nio.*;
+import java.time.*;
+import java.time.chrono.*;
+import java.time.format.*;
+import java.time.temporal.*;
+import java.time.zone.*;
+
+
+
+public class _JContainer{}
+
+//C-R:moveVision
+class moveVision extends Component { //[I-S]LN=0;[I-E]
+  private Vector2 joy; //[I-S]LN=1;[I-E]
+  private float speedJ = 2; //[I-S]LN=2;[I-E]
+  private float x, y; //[I-S]LN=3;[I-E]
+  public Texture[] spaits = new Texture[10]; //[I-S]LN=4;[I-E]
+  private ModelRenderer model; //[I-S]LN=5;[I-E]
+  private SpatialObject obj; //[I-S]LN=6;[I-E]
+  private int anim = 0, AnimFC = 0; //[I-S]LN=7;[I-E]
+  private float FrameTime = 0, delay = .15f; //[I-S]LN=8;[I-E]
+  private int mvSkin = 0; //[I-S]LN=9;[I-E]
+ //[I-S]LN=10;[I-E]
+public   void start() { //[I-S]LN=11;[I-E]
+    joy = Input.getAxisValue("joy"); //[I-S]LN=12;[I-E]
+    obj = myObject.findChildObject("model"); //[I-S]LN=13;[I-E]
+    model = obj.findComponent("ModelRenderer"); //[I-S]LN=14;[I-E]
+  } //[I-S]LN=15;[I-E]
+ //[I-S]LN=16;[I-E]
+public   void repeat() { //[I-S]LN=17;[I-E]
+    if (Input.isKeyDown("mvSkin")) mvSkin++; //[I-S]LN=18;[I-E]
+    if (mvSkin >= spaits.length) mvSkin = 0; //[I-S]LN=19;[I-E]
+model.getMaterial().setAlbedo(spaits[mvSkin]); //[I-S]LN=20;[I-E]
+    if (key("w") || key("s") || key("a") || key("d")) { //[I-S]LN=21;[I-E]
+      movekey(); //[I-S]LN=22;[I-E]
+    } else { //[I-S]LN=23;[I-E]
+move(joy.getX() * speedJ, joy.getY() * speedJ); //[I-S]LN=24;[I-E]
+animation(joy.getX() * speedJ, joy.getY() * speedJ); //[I-S]LN=25;[I-E]
+    }  //[I-S]LN=26;[I-E]
+  } //[I-S]LN=27;[I-E]
+ //[I-S]LN=28;[I-E]
+  private void movekey() { //[I-S]LN=29;[I-E]
+    float x = 0, y = 0; //[I-S]LN=30;[I-E]
+    if (key("w")) y = +1; //[I-S]LN=31;[I-E]
+    if (key("s")) y = -1; //[I-S]LN=32;[I-E]
+    if (key("a")) x = -1; //[I-S]LN=33;[I-E]
+    if (key("d")) x = +1; //[I-S]LN=34;[I-E]
+    move(x * speedJ, -y * speedJ); //[I-S]LN=35;[I-E]
+    animation(x * speedJ, -y * speedJ); //[I-S]LN=36;[I-E]
+  } //[I-S]LN=37;[I-E]
+ //[I-S]LN=38;[I-E]
+  private boolean key(String key) { //[I-S]LN=39;[I-E]
+    if (Input.keyboard.isKeyPressed(key)) return true; //[I-S]LN=40;[I-E]
+    return false; //[I-S]LN=41;[I-E]
+  } //[I-S]LN=42;[I-E]
+ //[I-S]LN=43;[I-E]
+  private void move(float x, float y) { //[I-S]LN=44;[I-E]
+    myObject.moveInSeconds(x, 0, y); //[I-S]LN=45;[I-E]
+    // if (x != 0 || y != 0) Console.log("x: " + x + "y: " + y); //[I-S]LN=46;[I-E]
+  } //[I-S]LN=47;[I-E]
+ //[I-S]LN=48;[I-E]
+  private void animation(float x, float y) { //[I-S]LN=49;[I-E]
+    if (Math.abs(x) == 0 && Math.abs(y) == 0) { //[I-S]LN=50;[I-E]
+      anim = 0; //[I-S]LN=51;[I-E]
+      atlas(0, AnimFC); //[I-S]LN=52;[I-E]
+      return; //[I-S]LN=53;[I-E]
+    } //[I-S]LN=54;[I-E]
+    FrameTime += Time.deltaTime(); //[I-S]LN=55;[I-E]
+    if (FrameTime >= delay) { //[I-S]LN=56;[I-E]
+      FrameTime = 0; //[I-S]LN=57;[I-E]
+      if ((anim++) > 1) anim = 0; //[I-S]LN=58;[I-E]
+    } //[I-S]LN=59;[I-E]
+    if (Math.abs(y) > Math.abs(x)) { //[I-S]LN=60;[I-E]
+      AnimFC = (y > 0) ? 0 : 1; //[I-S]LN=61;[I-E]
+    } else { //[I-S]LN=62;[I-E]
+      AnimFC = 2; //[I-S]LN=63;[I-E]
+      if (x < 0) obj.setScale(1, 1, 1); //[I-S]LN=64;[I-E]
+      else if (x > 0) obj.setScale(-1f, 1, 1); //[I-S]LN=65;[I-E]
+    } //[I-S]LN=66;[I-E]
+    atlas(anim, AnimFC); //[I-S]LN=67;[I-E]
+  } //[I-S]LN=68;[I-E]
+ //[I-S]LN=69;[I-E]
+  public void atlas(int x, int y) { //[I-S]LN=70;[I-E]
+model.getMaterial().setVector2("AlbedoOffset", new Vector2(x * .329f, y * .3348f)); //[I-S]LN=71;[I-E]
+model.getMaterial().setVector2("AlbedoTilling", new Vector2(0.333333f, .333333f)); //[I-S]LN=72;[I-E]
+  } //[I-S]LN=73;[I-E]
+ //[I-S]LN=74;[I-E]
+  public int getAnimFC() { //[I-S]LN=75;[I-E]
+    return AnimFC; //[I-S]LN=76;[I-E]
+  } //[I-S]LN=77;[I-E]
+ //[I-S]LN=78;[I-E]
+  public int getAnim() { //[I-S]LN=79;[I-E]
+    return anim; //[I-S]LN=80;[I-E]
+  } //[I-S]LN=81;[I-E]
+  /* //[I-S]LN=82;[I-E]
+  float shakeAmount = .15f, times = 0; //[I-S]LN=83;[I-E]
+  public boolean onoff = true; //[I-S]LN=84;[I-E]
+ //[I-S]LN=85;[I-E]
+  private void shake(float value) { //[I-S]LN=86;[I-E]
+    if (!onoff) return; //[I-S]LN=87;[I-E]
+    Vector3 mypos = obj.position.copy(); //[I-S]LN=88;[I-E]
+    if (onoff) { //[I-S]LN=89;[I-E]
+      times += 0.01f; //[I-S]LN=90;[I-E]
+      float offsetX = (float) Random.range(-shakeAmount, shakeAmount); //[I-S]LN=91;[I-E]
+      float offsetZ = (float) Random.range(-shakeAmount, shakeAmount); //[I-S]LN=92;[I-E]
+      obj.setPosition(mypos.x + offsetX, mypos.y, mypos.z + offsetZ); //[I-S]LN=93;[I-E]
+      if (times > value) { //[I-S]LN=94;[I-E]
+        obj.setPosition(mypos); //[I-S]LN=95;[I-E]
+        onoff = false; //[I-S]LN=96;[I-E]
+        times = 0; //[I-S]LN=97;[I-E]
+      } //[I-S]LN=98;[I-E]
+    } //[I-S]LN=99;[I-E]
+  }*/ //[I-S]LN=100;[I-E]
+} // 0.329f //[I-S]LN=101;[I-E]
