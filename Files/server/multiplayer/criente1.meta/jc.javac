@@ -50,7 +50,9 @@ public class criente1 extends Component {
         float rx = rotCache.getX(i), ry = rotCache.getY(i), rz = rotCache.getZ(i);
         remotePlay[i].setPosition(px, py, pz);
         remotePlay[i].setRotation(rx, ry, rz);
-        if (animRemoto != null) animRemoto.PlayAnimation(remotePlay[i], sprite[0], animCache.get(i), dirCache.get(i));
+        int anim = animCache.get(i), dir = dirCache.get(i);
+        int preanim = animBufferCache.get(i), predir = dirBufferCache.get(i);
+        if (anim != preanim || dir != predir) animRemoto.PlayAnimation(remotePlay[i], sprite[0], anim, dir);
       } 
     }
     swap();
