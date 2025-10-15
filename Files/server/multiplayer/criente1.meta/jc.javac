@@ -20,6 +20,9 @@ public class criente1 extends Component {
   private SUIText txt;
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
+  private animAmigo animRemoto = new animAmigo();
+
+  public Texture[] sprite = new Texture[3];
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -47,9 +50,8 @@ public class criente1 extends Component {
         float rx = rotCache.getX(i), ry = rotCache.getY(i), rz = rotCache.getZ(i);
         remotePlay[i].setPosition(px, py, pz);
         remotePlay[i].setRotation(rx, ry, rz);
-        moveVision mv = remotePlay[i].findComponent("moveVision");
-        if (mv != null) mv.atlas(animCache.get(i), dirCache.get(i));
-      }
+        if (animRemoto != null) animRemoto.PlayAnimation(remotePlay[i], sprite[0], animCache.get(i), dirCache.get(i));
+      } 
     }
     swap();
     if (Input.isKeyDown("serv") && !checkServe.running) {
@@ -190,7 +192,7 @@ public class criente1 extends Component {
                         if (mv != null) {
                           anim = mv.getAnim();
                           dir = mv.getAnimFC();
-                        } 
+                        }
                         sb.append("pos:").append(myId).append(":").append(pos.x).append(":").append(pos.y).append(":").append(pos.z).append("\n");
                         sb.append("rot:").append(myId).append(":").append(rot.x).append(":").append(rot.y).append(":").append(rot.z).append("\n");
                         sb.append("anim:").append(myId).append(":").append(anim).append(":").append(dir).append("\n");
@@ -214,6 +216,8 @@ public class criente1 extends Component {
       protocolo.handlePos(txt, myId, posCache, remoteId, maxPlayer);
     } else if (txt.startsWith("rot:")) {
       protocolo.handleRot(txt, myId, rotCache, remoteId, maxPlayer);
+    } else if (txt.startsWith("anim:")) {
+      protocolo.handleAnim(txt, myId, animCache, animBufferCache, remoteId, maxPlayer);
     } else if (txt.startsWith("left:")) {
       handleLeft(txt);
     } else {
@@ -285,9 +289,12 @@ public class criente1 extends Component {
 
   private void swap() {
     Vector3Buffer tmpPos = posCache, tmpRot = rotCache;
+    IntBuffer tmpanim = animCache;
     posCache = posBufferCache;
     posBufferCache = tmpPos;
     rotCache = rotBufferCache;
     rotBufferCache = tmpRot;
+    animCache = animBufferCache;
+    animBufferCache = tmpanim;
   }
 }
