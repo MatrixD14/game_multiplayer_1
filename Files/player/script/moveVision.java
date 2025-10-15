@@ -8,7 +8,6 @@ public class moveVision extends Component {
   private int anim = 0, AnimFC = 0;
   private float FrameTime = 0, delay = .15f;
   private int mvSkin = 0;
-  private boolean Move = false;
 
   void start() {
     joy = Input.getAxisValue("joy");
@@ -46,15 +45,15 @@ public class moveVision extends Component {
   }
 
   private void animation(float x, float y) {
-    Move = !(Math.abs(x) < 0.0001f && Math.abs(y) < 0.0001f);
-    if (!Move) {
-      atlas(anim, AnimFC);
+    if (Math.abs(x) == 0 && Math.abs(y) == 0) {
+      anim = 0;
+      atlas(0, AnimFC);
       return;
-    }
+    } 
     FrameTime += Time.deltatime();
     if (FrameTime >= delay) {
       FrameTime = 0;
-      if ((anim++) >= 2) anim = 0;
+      if ((anim++) > 1) anim = 0;
     }
     if (Math.abs(y) > Math.abs(x)) {
       AnimFC = (y > 0) ? 0 : 1;
@@ -62,7 +61,7 @@ public class moveVision extends Component {
       AnimFC = 2;
       if (x < 0) obj.setScale(1, 1, 1);
       else if (x > 0) obj.setScale(-1f, 1, 1);
-    } 
+    }
     atlas(anim, AnimFC);
   }
 
