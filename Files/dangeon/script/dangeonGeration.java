@@ -22,8 +22,7 @@ public class dangeonGeration extends Component {
   public void gerationDange() {
     for (int x = 0; x < size.x; x++) {
       for (int z = 0; z < size.y; z++) {
-        int index = x + z * size.x;
-        Cell cellTmp = board.get(index);
+        Cell cellTmp = board.get(x + z * size.x);
         if (cellTmp.vision) {
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
           // if (newRoom.findComponent("dangenBer")==null) newRoom.addComponent(new dangenBer());
@@ -47,6 +46,7 @@ public class dangeonGeration extends Component {
     while (k < 1000) {
       k++;
       board.get(currentCell).vision = true;
+      if(currentCell == board.size()-1) break;
       List<Integer> neighbors = checkNeighbors(currentCell);
       if (neighbors.isEmpty()) {
         if (path.isEmpty()) break;
