@@ -19,15 +19,16 @@ public class dangeonGeration extends Component {
     for (int x = 0; x < size.x; x++) {
       for (int z = 0; z < size.y; z++) {
         Cell cellTmp = board.get(x + z * size.x);
+
         if (cellTmp.vision) {
           name.setLength(0);
-          SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));          
+          SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
+          if (newRoom.findComponent(dangenBer.class) == null) newRoom.addComponent(new dangenBer());
+          dangenBer roomber = newRoom.findComponent(dangenBer.class);
+          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString());
           name.append(x).append(" ").append(z);
           newRoom.setName(name.toString());
-          dangenBer roomber = null;
-          if (roomber == null) roomber = newRoom.findComponent("dangenBer");
-          if (roomber != null) roomber.UpdateRoom(cellTmp.status);
-        }
+        } 
       }
     }
   }
@@ -55,23 +56,23 @@ public class dangeonGeration extends Component {
         int newCell = neighbors.get(Random.range(0, neighbors.size() - 1));
         if (newCell > currentCell) {
           if (newCell - 1 == currentCell) {
-            board.get(currentCell).status[2] = true;
-            currentCell = newCell;
             board.get(currentCell).status[3] = true;
-          } else {
+            currentCell = newCell;
             board.get(currentCell).status[1] = true;
+          } else {
+            board.get(currentCell).status[2] = true;
             currentCell = newCell;
             board.get(currentCell).status[0] = true;
           }
         } else {
           if (newCell + 1 == currentCell) {
-            board.get(currentCell).status[3] = true;
+            board.get(currentCell).status[1] = true;
             currentCell = newCell;
-            board.get(currentCell).status[2] = true;
+            board.get(currentCell).status[3] = true;
           } else {
             board.get(currentCell).status[0] = true;
             currentCell = newCell;
-            board.get(currentCell).status[1] = true;
+            board.get(currentCell).status[2] = true;
           }
         }
       }
@@ -91,5 +92,5 @@ public class dangeonGeration extends Component {
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
 
     return neighbors;
-  } 
+  }
 }
