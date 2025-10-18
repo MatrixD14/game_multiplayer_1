@@ -6,6 +6,7 @@ public class dangenBer {
       VertexFile obj = status[i] ? doors : walls;
       float rot = (i == 0) ? -90 : (i == 1) ? 180 : (i == 2) ? 90 : 0;
       SpatialObject ob = new SpatialObject();
+      if (i == 1 || i == 2) ob.setTag("wall");
       ob.addComponent(new ModelRenderer());
       ob.addComponent(new Collider(3));
       ModelRenderer model = ob.findComponent("ModelRenderer");
@@ -19,6 +20,18 @@ public class dangenBer {
       Quaternion rots = new Quaternion();
       rots.setFromEuler(new Vector3(0, rot, 0));
       ob.setRotation(rots);
-    } 
+      if (i == 0 || i == 3) ob.addComponent(new checkPhysics());
+    }
+  }
+
+  public class checkPhysics extends Component {
+    void start() {
+      for (Collision col : myObject.getCollisionList()) {
+        if (col.getOtherObject().getTag().equals("wall")) {
+          col.getOtherObject().destroy();
+          continue;
+        } 
+      }
+    }
   }
 }
