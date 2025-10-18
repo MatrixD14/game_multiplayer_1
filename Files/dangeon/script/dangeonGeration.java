@@ -9,6 +9,8 @@ public class dangeonGeration extends Component {
   public List<Cell> board;
   public ObjectFile room;
   public Point2 offset = new Point2();
+  @Order(idx = 1)
+  public ObjectFile walls, doors;
 
   void start() {
     armGerador();
@@ -25,7 +27,7 @@ public class dangeonGeration extends Component {
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
           if (newRoom.findComponent(dangenBer.class) == null) newRoom.addComponent(new dangenBer());
           dangenBer roomber = newRoom.findComponent(dangenBer.class);
-          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString());
+          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(),walls, doors);
           name.append(x).append(" ").append(z);
           newRoom.setName(name.toString());
         } 
