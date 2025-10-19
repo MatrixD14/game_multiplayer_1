@@ -26,8 +26,8 @@ public class dangeonGeration extends Component {
           name.setLength(0);
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
           dangenBer roomber = new dangenBer();
-          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);
           name.append(x).append(" ").append(z);
+          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);       
           newRoom.setName(name.toString());
         }
       }
