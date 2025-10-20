@@ -1,7 +1,7 @@
 public class dangeonGeration extends Component {
   public class Cell {
     public boolean vision = false;
-    public boolean[] status = new boolean[4];
+    public int[] status = new int[] {2, 2, 2, 2};
   }
 
   public Point2 size = new Point2();
@@ -11,10 +11,11 @@ public class dangeonGeration extends Component {
   public Point2 offset = new Point2();
   @Order(idx = 1)
   public VertexFile walls, doors;
+  // private HashMap<Long, SpatialObject> spaw = new HashMap<Long, SpatialObject>();
 
   void start() {
     armGerador();
-  } 
+  }
 
   public void gerationDange() {
     StringBuilder name = new StringBuilder(size.x + size.y);
@@ -27,7 +28,7 @@ public class dangeonGeration extends Component {
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
           dangenBer roomber = new dangenBer();
           name.append(x).append(" ").append(z);
-          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);       
+          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);
           newRoom.setName(name.toString());
         }
       }
@@ -57,23 +58,23 @@ public class dangeonGeration extends Component {
         int newCell = neighbors.get(Random.range(0, neighbors.size() - 1));
         if (newCell > currentCell) {
           if (newCell - 1 == currentCell) {
-            board.get(currentCell).status[3] = true;
+            board.get(currentCell).status[3] = 1;
             currentCell = newCell;
-            board.get(currentCell).status[1] = true;
+            board.get(currentCell).status[1] = 1;
           } else {
-            board.get(currentCell).status[2] = true;
+            board.get(currentCell).status[2] = 1;
             currentCell = newCell;
-            board.get(currentCell).status[0] = true;
+            board.get(currentCell).status[0] = 1;
           }
         } else {
           if (newCell + 1 == currentCell) {
-            board.get(currentCell).status[1] = true;
+            board.get(currentCell).status[1] = 1;
             currentCell = newCell;
-            board.get(currentCell).status[3] = true;
+            board.get(currentCell).status[3] = 1;
           } else {
-            board.get(currentCell).status[0] = true;
+            board.get(currentCell).status[0] = 1;
             currentCell = newCell;
-            board.get(currentCell).status[2] = true;
+            board.get(currentCell).status[2] = 1;
           }
         }
       }
@@ -91,7 +92,6 @@ public class dangeonGeration extends Component {
     if (((cell + 1) % size.x) != 0 && !board.get(cell + 1).vision) neighbors.add(cell + 1);
 
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
-
     return neighbors;
-  }
+  } 
 }
