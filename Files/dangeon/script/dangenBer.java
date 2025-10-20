@@ -65,8 +65,8 @@ public class dangenBer {
       my = myObject.globalPosition;
       mys = myObject.position;
       diretion = (n == 3) ? new Vector3(mys.x + 1, mys.y, mys.z) : myObject.right();
-      trag = (n == 3) ? new Vector3(my.x + 6.5f, my.y + 2.5f, my.z + 5) : new Vector3(my.x + 5, my.y + 2.5f, my.z - 6.5f);
-      LaserHit hit = l.trace(trag, diretion, 2f,PhysicsLayers.findByName("wall"));
+      trag = (n == 3) ? new Vector3(my.x + 7f, my.y + 2.5f, my.z + 5) : new Vector3(my.x + 5, my.y + 2.5f, my.z - 7f);
+      LaserHit hit = l.trace(trag, diretion, 2f);
       if (hit == null) return;
       Staticbody st = hit.getColliderObject().getPhysics().getPhysicsEntity();
       if (st == null) return;
