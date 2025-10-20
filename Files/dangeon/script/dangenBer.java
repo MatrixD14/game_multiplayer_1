@@ -1,6 +1,7 @@
 public class dangenBer {
   public ObjectFile walls, doors;
   private Staticbody st;
+
   public void UpdateRoom(boolean[] status, String txt, SpatialObject objs, VertexFile walls, VertexFile doors) {
     StringBuilder name = new StringBuilder();
     for (int i = 0; i < status.length; i++) {
@@ -23,16 +24,24 @@ public class dangenBer {
       Quaternion rots = new Quaternion();
       rots.setFromEuler(new Vector3(0, rot, 0));
       ob.setRotation(rots);
-      st = ob.getPhysics().getPhysicsEntity();
-      PhysicsLayer phy =null;
-      if (i == 3 || i == 2) {
-        phy = new PhysicsLayer("wall");
-        phy.addIgnoreLayer(phy);
-        st.setPhysicsLayer(phy);
-      }  else st.setPhysicsLayer(new PhysicsLayer("repeat"));
 
       if (i == 3) ob.addComponent(new checkPhysics(3));
       if (i == 2) ob.addComponent(new checkPhysics(2));
+      ob.addComponent(new physics((i == 3 || i == 2) ? true : false));
+    } 
+  }
+
+  public class physics extends Component {
+    private boolean onoff;
+    private Staticbody sta;
+
+    public physics(boolean onoff) {
+      this.onoff = onoff;
+    }
+
+    void start() {
+      sta = myObject.getPhysics().getPhysicsEntity();
+      sta.setPhysicsLayer(PhysicsLayers.findByName(!onoff ? "wall" : "repeat"));
     }
   }
 
@@ -42,7 +51,6 @@ public class dangenBer {
     private int n;
     private float t = 0;
     private Laser l;
-    PhysicsLayer phys;
 
     public checkPhysics(int n) {
       this.n = n;
@@ -52,7 +60,6 @@ public class dangenBer {
       l = new Laser();
       my = myObject.globalPosition;
       mys = myObject.position;
-      phys = new PhysicsLayer("wall");
     }
 
     void repeat() {
@@ -63,7 +70,7 @@ public class dangenBer {
       LaserHit hit = l.trace(trag, diretion, 1f);
       if (hit == null) return;
       Staticbody st = hit.getColliderObject().getPhysics().getPhysicsEntity();
-      if (st == null || st.getPhysicsLayer() == phys) return;
+      if (st == null || st.getPhysicsLayer() == PhysicsLayers.findByName("repeat")) return;
       Console.log(hit.getColliderObject().name);
       myObject.destroy();
     }
