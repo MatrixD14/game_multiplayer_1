@@ -1,10 +1,16 @@
 public class dangenBer {
 
-  public void UpdateRoom(boolean[] status, String txt, SpatialObject objs, VertexFile walls, VertexFile doors) {
+  public void UpdateRoom(int[] status, String txt, SpatialObject objs, VertexFile walls, VertexFile doors) {
     StringBuilder name = new StringBuilder();
     for (int i = 0; i < status.length; i++) {
       name.setLength(0);
-      Vertex obj = Vertex.loadFile(status[i] ? doors : walls);
+      Vertex obj;
+      try {
+        obj = Vertex.loadFile(status[i] == 1 ? doors : status[i] == 2 ? walls : null);
+      } catch (Exception e) {
+        continue;
+      } 
+
       float rot = (i == 0) ? -90 : (i == 1) ? 180 : (i == 2) ? 90 : 0;
       name.append(txt).append(" / ").append(rot);
       SpatialObject ob = new SpatialObject(name.toString(), objs);
@@ -19,6 +25,6 @@ public class dangenBer {
       Quaternion rots = new Quaternion();
       rots.setFromEuler(new Vector3(0, rot, 0));
       ob.setRotation(rots);
-    } 
+    }
   }
 }
