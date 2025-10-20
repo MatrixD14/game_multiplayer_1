@@ -13,6 +13,7 @@ public class dangenBer {
       ob.addComponent(new ModelRenderer());
       ob.addComponent(new Collider(3));
       ob.getPhysics().setPhysicsEntity(new Staticbody());
+      ob.addComponent(new physics((i == 3 || i == 2)));
       ModelRenderer model = ob.findComponent("ModelRenderer");
       model.setMaterial(new Material());
       model.material.setShader("PBR/Standard");
@@ -27,8 +28,7 @@ public class dangenBer {
 
       if (i == 3) ob.addComponent(new checkPhysics(3));
       if (i == 2) ob.addComponent(new checkPhysics(2));
-      ob.addComponent(new physics((i == 3 || i == 2) ? true : false));
-    } 
+    }
   }
 
   public class physics extends Component {
@@ -41,7 +41,7 @@ public class dangenBer {
 
     void start() {
       sta = myObject.getPhysics().getPhysicsEntity();
-      sta.setPhysicsLayer(PhysicsLayers.findByName(!onoff ? "wall" : "repeat"));
+      sta.setPhysicsLayer(PhysicsLayers.findByName(onoff ? "wall" : "repeat"));
     }
   }
 
@@ -58,21 +58,21 @@ public class dangenBer {
 
     void start() {
       l = new Laser();
-      my = myObject.globalPosition;
-      mys = myObject.position;
     }
 
     void repeat() {
-      if ((t += Time.deltatime()) < 2f) return;
-      if (my == null || mys == null) return;
+      if ((t += Time.deltatime()) < 3f) return;
+      my = myObject.globalPosition;
+      mys = myObject.position;
       diretion = (n == 3) ? new Vector3(mys.x + 1, mys.y, mys.z) : myObject.right();
-      trag = (n == 3) ? new Vector3(my.x + 8f, my.y + 2.5f, my.z + 5) : new Vector3(my.x + 5, my.y + 2.5f, my.z - 8f);
-      LaserHit hit = l.trace(trag, diretion, 1f);
+      trag = (n == 3) ? new Vector3(my.x + 6.5f, my.y + 2.5f, my.z + 5) : new Vector3(my.x + 5, my.y + 2.5f, my.z - 6.5f);
+      LaserHit hit = l.trace(trag, diretion, 2f,PhysicsLayers.findByName("repeat"));
       if (hit == null) return;
       Staticbody st = hit.getColliderObject().getPhysics().getPhysicsEntity();
-      if (st == null || st.getPhysicsLayer() == PhysicsLayers.findByName("repeat")) return;
+      if (st == null) return;
+      if (st.getPhysicsLayer() == PhysicsLayers.findByName("repeat")) return;
       Console.log(hit.getColliderObject().name);
       myObject.destroy();
     }
-  }
+  } 
 }
