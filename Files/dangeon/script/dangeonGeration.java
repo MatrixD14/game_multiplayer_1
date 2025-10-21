@@ -13,11 +13,11 @@ public class dangeonGeration extends Component {
   public VertexFile walls, doors;
   private dangenBer roomber;
   private PerlinNoise noise;
-  public int seed = 10;
+  public int seed = 90;
 
   void start() {
     roomber = new dangenBer();
-    noise = new PerlinNoise();
+    noise = new PerlinNoise(10);
     armGerador();
   }
 
@@ -53,33 +53,38 @@ public class dangeonGeration extends Component {
       board.get(currentCell).vision = true;
       if (currentCell == board.size() - 1) break;
       List<Integer> neighbors = checkNeighbors(currentCell);
-      if (neighbors.size() == 0) {
-        if (path.size() == 0) break;
-        else currentCell = path.pop();
-      } else if (neighbors.size() > 0) {
-        path.push(currentCell);
-        float noises = noise.noise(currentCell + seed, 0);
-        int idx = (int) (noises * neighbors.size());
-        int newCell = neighbors.get(idx);
-        if (newCell > currentCell) {
-          if (newCell - 1 == currentCell) {
-            board.get(currentCell).status[3] = 1;
-            currentCell = newCell;
-            board.get(currentCell).status[1] = 1;
+
+      if (neighbors.size() > 0) {
+        float noises = noise.noise(currentCell + seed + k, 0);
+        int idx = (int) (((noises + 1) * .5f) * neighbors.size());
+        if (idx >= neighbors.size()) idx = neighbors.size() - 1;
+        if (idx < 0) idx = 0;
+        if (neighbors.size() == 0) {
+          if (path.size() == 0) break;
+          else currentCell = path.pop();
+        }  else {
+          path.push(currentCell);
+          int newCell = neighbors.get(idx);
+          if (newCell > currentCell) {
+            if (newCell - 1 == currentCell) {
+              board.get(currentCell).status[3] = 1;
+              currentCell = newCell;
+              board.get(currentCell).status[1] = 1;
+            } else {
+              board.get(currentCell).status[2] = 1;
+              currentCell = newCell;
+              board.get(currentCell).status[0] = 1;
+            }
           } else {
-            board.get(currentCell).status[2] = 1;
-            currentCell = newCell;
-            board.get(currentCell).status[0] = 1;
-          } 
-        } else {
-          if (newCell + 1 == currentCell) {
-            board.get(currentCell).status[1] = 1;
-            currentCell = newCell;
-            board.get(currentCell).status[3] = 1;
-          } else {
-            board.get(currentCell).status[0] = 1;
-            currentCell = newCell;
-            board.get(currentCell).status[2] = 1;
+            if (newCell + 1 == currentCell) {
+              board.get(currentCell).status[1] = 1;
+              currentCell = newCell;
+              board.get(currentCell).status[3] = 1;
+            } else {
+              board.get(currentCell).status[0] = 1;
+              currentCell = newCell;
+              board.get(currentCell).status[2] = 1;
+            }
           }
         }
       }
