@@ -119,22 +119,23 @@ public class server1 extends Component {
           clientName[slot] = nome;
           sbId.append("id:").append(clientId[slot]);
           sendClient(client, sbId.toString());
+          spaw.setLength(0);
+          spaw.append("seed:0:").append(geraSeed);
+          sendClient(client, spaw.toString());
+          //broadcast(spaw.toString(), null);
           for (int i = 0; i < maxPlayer; i++) {
             if (clients[slot] != null && i != slot && clientId[i] != 0 && clientName[i] != null) {
               exists.setLength(0);
               exists.append("spaw:").append(clientId[i]).append(":").append(clientName[i]).append(":0:1:0");
               sendClient(client, exists.toString());
-            }
+            } 
           }
           spaw.setLength(0);
           spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
           broadcast(spaw.toString(), client);
-          spaw.setLength(0);
-          spaw.append("seed:").append(0).append(":").append(geraSeed).append("\n");
-          broadcast(spaw.toString(), null);
         } else if (line.startsWith("pos:") || line.startsWith("rot:")) broadcast(line, client);
         else broadcast(line, client);
-      } 
+      }
     } catch (Exception e) {
       Console.log("Erro client: " + e.getMessage());
     } finally {
