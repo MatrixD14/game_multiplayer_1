@@ -12,9 +12,12 @@ public class dangeonGeration extends Component {
   @Order(idx = 1)
   public VertexFile walls, doors;
   private dangenBer roomber;
+  private PerlinNoise noise;
+  public int seed = 10;
 
   void start() {
     roomber = new dangenBer();
+    noise = new PerlinNoise();
     armGerador();
   }
 
@@ -32,7 +35,7 @@ public class dangeonGeration extends Component {
           newRoom.setName(name.toString());
         }
       }
-    } 
+    }
   }
 
   public void armGerador() {
@@ -53,9 +56,11 @@ public class dangeonGeration extends Component {
       if (neighbors.size() == 0) {
         if (path.size() == 0) break;
         else currentCell = path.pop();
-      } else {
+      } else if (neighbors.size() > 0) {
         path.push(currentCell);
-        int newCell = neighbors.get(Random.range(0, neighbors.size() - 1));
+        float noises = noise.noise(currentCell + seed, 0);
+        int idx = (int) (noises * neighbors.size());
+        int newCell = neighbors.get(idx);
         if (newCell > currentCell) {
           if (newCell - 1 == currentCell) {
             board.get(currentCell).status[3] = 1;
@@ -65,7 +70,7 @@ public class dangeonGeration extends Component {
             board.get(currentCell).status[2] = 1;
             currentCell = newCell;
             board.get(currentCell).status[0] = 1;
-          }
+          } 
         } else {
           if (newCell + 1 == currentCell) {
             board.get(currentCell).status[1] = 1;
