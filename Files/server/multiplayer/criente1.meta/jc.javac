@@ -19,7 +19,7 @@ public class criente1 extends Component {
   private SUIText txt;
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
-  private dangeonGeration seedgera = new dangeonGeration();
+  private dangeonGeration seedgera;
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -32,6 +32,7 @@ public class criente1 extends Component {
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     txt = WorldController.findObject("Ip").findComponent("suitext");
     checkServe = myObject.findComponent("server1");
+    seedgera= WorldController.findObject("dangeon").findComponent("dangeonGeration");
   }
 
   void repeat() {
@@ -204,7 +205,7 @@ public class criente1 extends Component {
     } else if (txt.startsWith("rot:")) {
       protocolo.handleRot(txt, myId, rotCache, remoteId, maxPlayer);
     } else if (txt.startsWith("seed:")) {
-      protocolo.handleSeed(txt, myId, seedgera.getSeed());
+      protocolo.handleSeed(txt, myId, seedgera);
     } else if (txt.startsWith("left:")) {
       handleLeft(txt);
     } else {
