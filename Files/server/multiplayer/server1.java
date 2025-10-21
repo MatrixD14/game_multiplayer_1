@@ -7,6 +7,7 @@ public class server1 extends Component {
   private Socket[] clients = new Socket[maxPlayer];
   private int[] clientId = new int[maxPlayer];
   private String[] clientName = new String[maxPlayer];
+  private int geraSeed;
 
   void repeat() {
     if (Input.isKeyDown("serv")) {
@@ -16,6 +17,7 @@ public class server1 extends Component {
   }
 
   private void play() {
+    geraSeed = Random.range(100, 999);
     if (running) {
       Toast.showText("Servidor já está rodando!", 1);
       return;
@@ -127,7 +129,10 @@ public class server1 extends Component {
           spaw.setLength(0);
           spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
           broadcast(spaw.toString(), client);
-        } else if (line.startsWith("pos:") || line.startsWith("rot:") || line.startsWith("seed:")) broadcast(line, client);
+          spaw.setLength(0);
+          spaw.append("seed:").append(0).append(":").append(geraSeed).append("\n");
+          broadcast(spaw.toString(), null);
+        } else if (line.startsWith("pos:") || line.startsWith("rot:")) broadcast(line, client);
         else broadcast(line, client);
       } 
     } catch (Exception e) {
