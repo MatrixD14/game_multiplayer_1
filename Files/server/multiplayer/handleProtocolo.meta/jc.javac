@@ -30,12 +30,4 @@ public class handleProtocolo {
       }
     }
   }
-
-  public void handleSeed(String txt, int myId,dangeonGeration seed ) {
-    String[] p = txt.split(":");
-    int id = Integer.parseInt(p[1]);
-    if (id == myId) return;
-    seed.setSeed(Integer.parseInt(p[2]));
-    seed.armGerador();
-  }
 } 
