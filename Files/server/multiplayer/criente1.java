@@ -32,7 +32,7 @@ public class criente1 extends Component {
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     txt = WorldController.findObject("Ip").findComponent("suitext");
     checkServe = myObject.findComponent("server1");
-    seedgera= WorldController.findObject("dangeon").findComponent("dangeonGeration");
+    seedgera = WorldController.findObject("dangeon").findComponent("dangeonGeration");
   }
 
   void repeat() {
@@ -183,11 +183,11 @@ public class criente1 extends Component {
                         Quaternion rot = localPlayer.getRotation();
                         sb.append("pos:").append(myId).append(":").append(pos.x).append(":").append(pos.y).append(":").append(pos.z).append("\n");
                         sb.append("rot:").append(myId).append(":").append(rot.x).append(":").append(rot.y).append(":").append(rot.z).append("\n");
-                        sb.append("seed:").append(seedgera.getSeed()).append("\n");
+                        sb.append("seed:").append(myId).append(":").append(seedgera.getSeed()).append("\n");
                         out.write(sb.toString().getBytes("UTF-8"));
                         out.flush();
                         Thread.sleep(10);
-                      }
+                      } 
                     } catch (Exception e) {
                       desconnect();
                     }
@@ -211,7 +211,7 @@ public class criente1 extends Component {
     } else {
       Toast.showText(txt, 1);
       Console.log(txt);
-    } 
+    }
   }
 
   private void handleSpawn(String txt) {
