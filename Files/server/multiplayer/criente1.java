@@ -20,6 +20,7 @@ public class criente1 extends Component {
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
   private dangeonGeration seedgera;
+  private int geraSeed;
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -58,9 +59,9 @@ public class criente1 extends Component {
                 public void onFinish(String t) {
                   nome = t;
                   host = "localhost";
-                  seedgera.setSeed(Random.range(100, 999));
+                  geraSeed = Random.range(100, 999);
                   connect();
-                }
+                } 
 
                 public void onCancel() {}
               });
@@ -183,11 +184,11 @@ public class criente1 extends Component {
                         Quaternion rot = localPlayer.getRotation();
                         sb.append("pos:").append(myId).append(":").append(pos.x).append(":").append(pos.y).append(":").append(pos.z).append("\n");
                         sb.append("rot:").append(myId).append(":").append(rot.x).append(":").append(rot.y).append(":").append(rot.z).append("\n");
-                        sb.append("seed:").append(myId).append(":").append(seedgera.getSeed()).append("\n");
+                        sb.append("seed:").append(myId).append(":").append(geraSeed).append("\n");
                         out.write(sb.toString().getBytes("UTF-8"));
                         out.flush();
                         Thread.sleep(10);
-                      } 
+                      }
                     } catch (Exception e) {
                       desconnect();
                     }
@@ -200,12 +201,12 @@ public class criente1 extends Component {
 
     } else if (txt.startsWith("spaw:")) {
       handleSpawn(txt);
+    } else if (txt.startsWith("seed:")) {
+      handleSeed(txt);
     } else if (txt.startsWith("pos:")) {
       protocolo.handlePos(txt, myId, posCache, remoteId, maxPlayer);
     } else if (txt.startsWith("rot:")) {
       protocolo.handleRot(txt, myId, rotCache, remoteId, maxPlayer);
-    } else if (txt.startsWith("seed:")) {
-      protocolo.handleSeed(txt, myId, seedgera);
     } else if (txt.startsWith("left:")) {
       handleLeft(txt);
     } else {
@@ -262,6 +263,17 @@ public class criente1 extends Component {
               break;
             }
           }
+        });
+  }
+
+  public void handleSeed(String txt) {
+    final String[] p = txt.split(":");
+    int id = Integer.parseInt(p[1]);
+    if (id == myId) return;
+    runOnMain(
+        () -> {
+          seedgera.setSeed(Integer.parseInt(p[2]));
+          seedgera.armGerador();
         });
   }
 
