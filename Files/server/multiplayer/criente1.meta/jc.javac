@@ -20,7 +20,6 @@ public class criente1 extends Component {
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
   private dangeonGeration seedgera;
-  private int geraSeed;
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -59,7 +58,6 @@ public class criente1 extends Component {
                 public void onFinish(String t) {
                   nome = t;
                   host = "localhost";
-                  geraSeed = Random.range(100, 999);
                   connect();
                 } 
 
@@ -184,7 +182,6 @@ public class criente1 extends Component {
                         Quaternion rot = localPlayer.getRotation();
                         sb.append("pos:").append(myId).append(":").append(pos.x).append(":").append(pos.y).append(":").append(pos.z).append("\n");
                         sb.append("rot:").append(myId).append(":").append(rot.x).append(":").append(rot.y).append(":").append(rot.z).append("\n");
-                        sb.append("seed:").append(myId).append(":").append(geraSeed).append("\n");
                         out.write(sb.toString().getBytes("UTF-8"));
                         out.flush();
                         Thread.sleep(10);
