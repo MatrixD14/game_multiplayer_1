@@ -11,9 +11,10 @@ public class dangeonGeration extends Component {
   public Point2 offset = new Point2();
   @Order(idx = 1)
   public VertexFile walls, doors;
-  // private HashMap<Long, SpatialObject> spaw = new HashMap<Long, SpatialObject>();
+  private dangenBer roomber;
 
   void start() {
+    roomber = new dangenBer();
     armGerador();
   }
 
@@ -26,13 +27,12 @@ public class dangeonGeration extends Component {
         if (cellTmp.vision) {
           name.setLength(0);
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
-          dangenBer roomber = new dangenBer();
           name.append(x).append(" ").append(z);
           if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);
           newRoom.setName(name.toString());
         }
       }
-    }
+    } 
   }
 
   public void armGerador() {
@@ -93,5 +93,5 @@ public class dangeonGeration extends Component {
 
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
     return neighbors;
-  } 
+  }
 }
