@@ -30,4 +30,11 @@ public class handleProtocolo {
       }
     }
   }
+
+  public void handleSeed(String txt, int myId, int seed) {
+    String[] p = txt.split(":");
+    int id = Integer.parseInt(p[1]);
+    if (id == myId) return;
+    seed = Integer.parseInt(p[2]);
+  }
 } 
