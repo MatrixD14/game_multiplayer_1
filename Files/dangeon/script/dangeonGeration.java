@@ -4,21 +4,43 @@ public class dangeonGeration extends Component {
     public int[] status = new int[] {2, 2, 2, 2};
   }
 
+  public class Rule {
+    public SpatialObject room;
+    public Point2 minPos, maxPos;
+    public boolean obrig;
+
+    public Rule(SpatialObject room, Point2 minPos, Point2 maxPos) {
+      this.room = room;
+      this.minPos = minPos;
+      this.maxPos = maxPos;
+    }
+
+    public int probrabilidade(int x, int z) {
+      if (x >= minPos.x && x <= maxPos.x && z >= minPos.y && z <= maxPos.y) {
+        return obrig ? 2 : 1;
+      }
+      return 0;
+    }
+  }
+
   public Point2 size = new Point2();
   public int startPos = 0;
   public List<Cell> board;
   public ObjectFile room;
   public Point2 offset = new Point2();
   @Order(idx = 1)
-  public VertexFile walls, doors;
+  public VertexFile walls, doors, chao;
   private dangenBer roomber;
   private PerlinNoise noise;
-  public int seed = 90;
+  private int seed;
 
   void start() {
     roomber = new dangenBer();
     noise = new PerlinNoise(10);
-    armGerador();
+  }
+
+  void repeat() {
+    if (Input.isKeyDown("serv")) armGerador();
   }
 
   public void gerationDange() {
@@ -34,7 +56,7 @@ public class dangeonGeration extends Component {
           if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);
           newRoom.setName(name.toString());
         }
-      }
+      } 
     }
   }
 
@@ -62,7 +84,7 @@ public class dangeonGeration extends Component {
         if (neighbors.size() == 0) {
           if (path.size() == 0) break;
           else currentCell = path.pop();
-        }  else {
+        } else {
           path.push(currentCell);
           int newCell = neighbors.get(idx);
           if (newCell > currentCell) {
@@ -103,5 +125,13 @@ public class dangeonGeration extends Component {
 
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
     return neighbors;
+  }
+
+  public void setSeed(int seed) {
+    this.seed = seed;
+  }
+
+  public int getSeed() {
+    return seed;
   }
 }
