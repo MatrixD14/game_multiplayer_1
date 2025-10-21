@@ -13,11 +13,11 @@ public class server1 extends Component {
     if (Input.isKeyDown("serv")) {
       if (running) stop();
       else play();
+      geraSeed = Random.range(100, 999);
     }
   }
 
   private void play() {
-    geraSeed = Random.range(100, 999);
     if (running) {
       Toast.showText("Servidor já está rodando!", 1);
       return;
@@ -129,12 +129,12 @@ public class server1 extends Component {
               sendClient(client, exists.toString());
             }
           } 
+          /*spaw.setLength(0);
+          spaw.append("seed:0:").append(geraSeed);
+          broadcast(spaw.toString(), null);*/
           spaw.setLength(0);
           spaw.append("spaw:").append(clientId[slot]).append(":").append(nome).append(":0:1:0");
-          broadcast(spaw.toString(), client);
-          spaw.setLength(0);
-          spaw.append("seed:0:").append(geraSeed);
-          broadcast(spaw.toString(), null);
+          broadcast(spaw.toString(), client);       
         } else if (line.startsWith("pos:") || line.startsWith("rot:")) broadcast(line, client);
         else broadcast(line, client);
       }
