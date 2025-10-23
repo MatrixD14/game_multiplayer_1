@@ -1,15 +1,14 @@
 public class moveVision extends Component {
-  private Vector2 joy,slid;
+  private Vector2 joy, slid;
   private Characterbody ch;
-  private float speedJ = 2;
-  private float x, y,camx,camy;
-  private SpatialObject  cam;
-  private float cammin=-80,cammax=80;
-
+  private float speedJ = 5;
+  private float x, y, camx, camy;
+  private SpatialObject cam;
+  private float cammin = -80, cammax = 80;
   void start() {
     joy = Input.getAxisValue("joy");
-    slid =Input.getAxisValue("slid");
-    cam =myObject.findChildObject("vision");
+    slid = Input.getAxisValue("slid");
+    cam = myObject.findChildObject("vision");
     ch = myObject.getPhysics().getPhysicsEntity();
   }
 
@@ -19,7 +18,7 @@ public class moveVision extends Component {
     } else {
       move(joy.x * speedJ, joy.y * speedJ);
     }
-    slidCam(slid.x,slid.y);
+    slidCam(slid.x, slid.y);
   }
 
   private void movekey() {
@@ -37,14 +36,14 @@ public class moveVision extends Component {
   }
 
   private void move(float x, float y) {
-    ch.setSpeed(-x,-y);
+    ch.setSpeed(-x, -y);
   }
 
   private void slidCam(float x, float y) {
-      camx += x;
-      myObject.getRotation().selfLookTo(new Vector3(Math.sin(-camx),0,Math.cos(-camx)));
-      camy =Math.clamp(cammin,(camy+=y),cammax);
-      cam.getRotation().selfLookTo(new Vector3(0,Math.sin(-camy),Math.cos(-camy)));
+    camx += x;
+    myObject.getRotation().selfLookTo(new Vector3(Math.sin(-camx), 0, Math.cos(-camx)));
+    camy = Math.clamp(cammin, (camy += y), cammax);
+    cam.getRotation().selfLookTo(new Vector3(0, Math.sin(-camy), Math.cos(-camy)));
   }
 
   /*
