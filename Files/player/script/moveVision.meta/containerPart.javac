@@ -27,7 +27,7 @@ public class _JContainer{}
 class moveVision extends Component { //[I-S]LN=0;[I-E]
   private Vector2 joy, slid; //[I-S]LN=1;[I-E]
   private Characterbody ch; //[I-S]LN=2;[I-E]
-  private float speedJ = 5; //[I-S]LN=3;[I-E]
+  private float speedJ = 10; //[I-S]LN=3;[I-E]
   private float x, y, camx, camy; //[I-S]LN=4;[I-E]
   private SpatialObject cam; //[I-S]LN=5;[I-E]
   private float cammin = -80, cammax = 80; //[I-S]LN=6;[I-E]
