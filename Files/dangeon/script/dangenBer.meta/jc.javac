@@ -1,7 +1,7 @@
 public class dangenBer {
   private HashSet<Long> gerar = new HashSet<Long>();
 
-  public void UpdateRoom(int[] status, String txt, SpatialObject objs, VertexFile walls, VertexFile doors) {
+  public void UpdateRoom(int[] status, String txt, SpatialObject objs, VertexFile walls, VertexFile doors,Color color) {
     String[] name = txt.split("\\s+");
     int cellx = Integer.parseInt(name[0]), cellz = Integer.parseInt(name[1]);
     int[][] dirs = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
@@ -15,17 +15,18 @@ public class dangenBer {
 
       Vertex obj = Vertex.loadFile(status[i] == 1 ? doors : walls);
       float rot = (i == 0) ? -90 : (i == 1) ? 180 : (i == 2) ? 90 : 0;
-      spawObj(rot, new Point2(0, 0), new Point3(1, 1, 1), new SpatialObject(txt + key, objs), obj);
+      spawObj(rot, new Point2(0, 0), new Point3(1, 1, 1),color, new SpatialObject(txt + key, objs), obj);
     }
   } 
 
-  public SpatialObject spawObj(float rot, Point2 pos, Point3 scale, SpatialObject ob, Vertex obj) {
+  public SpatialObject spawObj(float rot, Point2 pos, Point3 scale,Color color, SpatialObject ob, Vertex obj) {
     ob.addComponent(new ModelRenderer(obj));
     ob.addComponent(new Collider(3));
     ModelRenderer model = ob.findComponent("ModelRenderer");
     model.setMaterial(new Material());
     model.material.setShader("PBR/Standard");
     model.material.setReceiveLight(false);
+    model.material.setDiffuse(color);
     Collider col = ob.findComponent("Collider");
     col.setVertex(obj);
     Quaternion rots = new Quaternion();
