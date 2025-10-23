@@ -147,12 +147,22 @@ public class dangeonGeration extends Component {
     return map;
   }
 
+  private int oldpx = -1, oldpz = -1;
+
   public Texture playermove(Vector3 m) {
-    int px = (int) (m.x / (offset.x/1)), pz = (int) (m.z / (offset.y/1));
-    map.set(px * 2, (size.y - pz - 1) * 2, Color.YELLOW());
+    int px = (int) Math.round(m.x / offset.x), pz = (int) Math.round(m.z / offset.y);
+    if (oldpx != -1 && oldpz != -1) {
+      Cell cellTmp = board.get(oldpx + oldpz * size.x);
+      Color cors = oldpx == 0 && oldpz == 0 ? cor[0] : (px == (size.x - 1) && pz == (size.y - 1)) ? cor[2] : (cellTmp.vision ? cor[3] : Color.WHITE());
+      map.set(oldpx * 2, (size.y - oldpz - 1) * 2, cors);
+    } 
+
+    map.set(px * 2, (size.y - pz - 1) * 2, Color.GREEN());
     map.apply();
+    oldpx = px;
+    oldpz = pz;
     return map;
-  } 
+  }
 
   public void setSeed(int seed) {
     this.seed = seed;
