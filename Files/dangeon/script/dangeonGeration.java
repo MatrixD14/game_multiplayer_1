@@ -4,16 +4,10 @@ public class dangeonGeration extends Component {
     public int[] status = new int[] {2, 2, 2, 2};
   }
 
-  public class Rule {
+  public class Rule extends Component {
     public SpatialObject room;
     public Point2 minPos, maxPos;
     public boolean obrig;
-
-    public Rule(SpatialObject room, Point2 minPos, Point2 maxPos) {
-      this.room = room;
-      this.minPos = minPos;
-      this.maxPos = maxPos;
-    }
 
     public int probrabilidade(int x, int z) {
       if (x >= minPos.x && x <= maxPos.x && z >= minPos.y && z <= maxPos.y) {
@@ -23,24 +17,28 @@ public class dangeonGeration extends Component {
     }
   }
 
-  public Point2 size = new Point2();
-  public int startPos = 0;
+  @Order(idx = -1)
+  public Point2 size = new Point2(), offset = new Point2();
+  private int startPos = 0;
   public List<Cell> board;
   public ObjectFile room;
-  public Point2 offset = new Point2();
   @Order(idx = 1)
   public VertexFile walls, doors, chao;
   private dangenBer roomber;
   private PerlinNoise noise;
   private int seed;
+  private Rule[] rooms = new Rule[2];
+  private Color[] cor;
+  private UIRotateImage img;
 
   void start() {
+    img = WorldController.findObject("minimap").findComponent("RotateImage");
+    cor = new Color[] {new Color(0, 0, 125), new Color(0, 255, 0), new Color(125, 0, 0), new Color(50, 50, 50)};
+    seed = 20;
     roomber = new dangenBer();
     noise = new PerlinNoise(10);
-  }
-
-  void repeat() {
-    if (Input.isKeyDown("serv")) armGerador();
+    armGerador();
+    img.setTexture(miniMap());
   }
 
   public void gerationDange() {
@@ -53,10 +51,10 @@ public class dangeonGeration extends Component {
           name.setLength(0);
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, -z * offset.y));
           name.append(x).append(" ").append(z);
-          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors);
+          if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
           newRoom.setName(name.toString());
         }
-      } 
+      }
     }
   }
 
@@ -125,6 +123,21 @@ public class dangeonGeration extends Component {
 
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
     return neighbors;
+  }
+
+  private Texture miniMap() {
+    Texture map = new Texture(size.x, size.y, true);
+    map.setMipmapEnabled(false);
+    for (int x = 0; x < size.x; x++) {
+      for (int z = 0; z < size.y; z++) {
+        Cell cellTmp = board.get(x + z * size.x);
+
+        if (cellTmp.vision) map.set(x, z, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
+        else map.set(x, z, Color.BLACK());
+      } 
+    }
+    map.apply();
+    return map;
   }
 
   public void setSeed(int seed) {
