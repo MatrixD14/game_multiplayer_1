@@ -150,14 +150,14 @@ public class dangeonGeration extends Component {
   private int oldpx = -1, oldpz = -1;
 
   public Texture playermove(Vector3 m) {
-    int px = (int) Math.round(m.x / offset.x), pz = (int) Math.round(m.z / offset.y);
+    int px = (int) Math.round((m.x + (size.x * offset.x) / 2) / offset.x), pz = (int) Math.round((m.z + (size.y * offset.y) / 2) / offset.y);
     if (oldpx != -1 && oldpz != -1) {
       Cell cellTmp = board.get(oldpx + oldpz * size.x);
       Color cors = oldpx == 0 && oldpz == 0 ? cor[0] : (px == (size.x - 1) && pz == (size.y - 1)) ? cor[2] : (cellTmp.vision ? cor[3] : Color.WHITE());
-      map.set(oldpx * 2, (size.y - oldpz - 1) * 2, cors);
+      map.set(oldpx * 2, size.y * 2 - oldpz * 2- 1, cors);
     } 
 
-    map.set(px * 2, (size.y - pz - 1) * 2, Color.GREEN());
+    map.set(px * 2, size.y * 2 - pz * 2- 1, Color.GREEN());
     map.apply();
     oldpx = px;
     oldpz = pz;
