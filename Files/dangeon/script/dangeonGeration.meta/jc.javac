@@ -30,15 +30,23 @@ public class dangeonGeration extends Component {
   private Rule[] rooms = new Rule[2];
   private Color[] cor;
   private UIRotateImage img;
+  private Texture map;
+  private SpatialObject myplayer;
 
   void start() {
+    map = new Texture(size.x * 2, size.y * 2, true);
     img = WorldController.findObject("minimap").findComponent("RotateImage");
+    myplayer = WorldController.findObject("player2d");
     cor = new Color[] {new Color(0, 0, 125), new Color(0, 255, 0), new Color(125, 0, 0), new Color(50, 50, 50)};
     seed = 20;
     roomber = new dangenBer();
     noise = new PerlinNoise(10);
     armGerador();
     img.setTexture(miniMap());
+  }
+
+  void repeat() {
+    img.setTexture(playermove(myplayer.position));
   }
 
   public void gerationDange() {
@@ -126,19 +134,25 @@ public class dangeonGeration extends Component {
   }
 
   private Texture miniMap() {
-    Texture map = new Texture(size.x, size.y, true);
     map.setMipmapEnabled(false);
     for (int x = 0; x < size.x; x++) {
       for (int z = 0; z < size.y; z++) {
         Cell cellTmp = board.get(x + z * size.x);
-
-        if (cellTmp.vision) map.set(x, z, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
-        else map.set(x, z, Color.BLACK());
-      } 
+        int xs = x * 2, zs = (size.y - z - 1) * 2;
+        if (cellTmp.vision) map.set(xs, zs, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
+        else map.set(xs, zs, Color.WHITE());
+      }
     }
     map.apply();
     return map;
   }
+
+  public Texture playermove(Vector3 m) {
+    int px = (int) (m.x / (offset.x/1)), pz = (int) (m.z / (offset.y/1));
+    map.set(px * 2, (size.y - pz - 1) * 2, Color.YELLOW());
+    map.apply();
+    return map;
+  } 
 
   public void setSeed(int seed) {
     this.seed = seed;
