@@ -18,7 +18,7 @@ public class dangeonGeration extends Component {
   }
 
   @Order(idx = -1)
-  public Point2 size = new Point2(), offset = new Point2();
+  public Point2 size = new Point2(5,5), offset = new Point2(63,64);
   private int startPos = 0;
   public List<Cell> board;
   public ObjectFile room;
@@ -42,7 +42,7 @@ public class dangeonGeration extends Component {
     roomber.setTexture(1 + size.x * 2, 1 + size.y * 2);
     armGerador();
     img.setTexture(roomber.miniMap(board, size, cor));
-  } 
+  }
 
   void repeat() {
     img.setTexture(roomber.playermove(board, myplayer.position, size, offset, cor));
@@ -60,7 +60,7 @@ public class dangeonGeration extends Component {
           name.append(x).append(" ").append(z);
           if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
           newRoom.setName(name.toString());
-        }
+        } 
       }
     }
   }
