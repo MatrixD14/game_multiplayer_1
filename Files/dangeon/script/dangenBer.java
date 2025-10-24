@@ -11,7 +11,7 @@ public class dangenBer {
       int wx = 2 * cellx + dirs[i][0], wz = 2 * cellz + dirs[i][1];
       long key = codKey(wx, wz);
       // Console.log(key);
-      if (gerar.contains(key)) continue;
+      //if (gerar.contains(key)) continue;
       gerar.add(key);
 
       Vertex obj = Vertex.loadFile(status[i] == 1 ? doors : walls);
@@ -58,7 +58,7 @@ public class dangenBer {
     int px = (int) Math.round(m.x / offset.x), pz = (int) Math.round(m.z / offset.y);
     if (oldpx != -1 && oldpz != -1) {
       dangeonGeration.Cell cellTmp = board.get(oldpx + oldpz * size.x);
-      Color cors = oldpx == 0 && oldpz == 0 ? cor[0] : (px == (size.x) && pz == (size.y)) ? cor[2] : (cellTmp.vision ? cor[3] : new Color(0, 0, 0, 0));
+      Color cors = oldpx == 0 && oldpz == 0 ? cor[0] : (px == (size.x) && pz == (size.y)) ? cor[2] : (cellTmp.vision ? cor[3] : Color.WHITE());
       map.set(1 + (size.x - oldpx - 1) * 2, 1 + (size.y - oldpz - 1) * 2, cors);
     } 
 
