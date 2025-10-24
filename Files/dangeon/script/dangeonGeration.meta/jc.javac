@@ -18,7 +18,7 @@ public class dangeonGeration extends Component {
   }
 
   @Order(idx = -1)
-  public Point2 size = new Point2(5,5), offset = new Point2(63,64);
+  public Point2 size = new Point2(5,5), offset = new Point2(65,65);
   private int startPos = 0;
   public List<Cell> board;
   public ObjectFile room;
@@ -36,7 +36,6 @@ public class dangeonGeration extends Component {
     img = WorldController.findObject("minimap").findComponent("RotateImage");
     myplayer = WorldController.findObject("player2d");
     cor = new Color[] {new Color(0, 0, 125), new Color(0, 255, 0), new Color(125, 0, 0), new Color(50, 50, 50)};
-    seed = 20;
     roomber = new dangenBer();
     noise = new PerlinNoise(10);
     roomber.setTexture(1 + size.x * 2, 1 + size.y * 2);
