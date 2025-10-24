@@ -1,7 +1,7 @@
 public class moveVision extends Component {
   private Vector2 joy, slid;
   private Characterbody ch;
-  private float speedJ = 10;
+  private float speedJ = 20;
   private float x, y, camx, camy;
   private SpatialObject cam;
   private float cammin = -80, cammax = 80;
