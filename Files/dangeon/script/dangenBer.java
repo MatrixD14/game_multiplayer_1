@@ -11,7 +11,7 @@ public class dangenBer {
       int wx = 2 * cellx + dirs[i][0], wz = 2 * cellz + dirs[i][1];
       long key = codKey(wx, wz);
       // Console.log(key);
-      //if (gerar.contains(key)) continue;
+      if (gerar.contains(key)) continue;
       gerar.add(key);
 
       Vertex obj = Vertex.loadFile(status[i] == 1 ? doors : walls);
@@ -45,7 +45,7 @@ public class dangenBer {
         dangeonGeration.Cell cellTmp = board.get(x + z * size.x);
         int xs = 1 + (size.x - x - 1) * 2, zs = 1 + (size.y - z - 1) * 2;
         if (cellTmp.vision) map.set(xs, zs, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
-        else map.set(xs, zs, new Color(0, 0, 0, 0));
+        else map.set(xs, zs, Color.WHITE());
       }
     }
     map.apply();
