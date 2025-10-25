@@ -5,9 +5,16 @@ public class dangeonGeration extends Component {
   }
 
   public class Rule extends Component {
-    public SpatialObject room;
+    public ObjectFile room;
     public Point2 minPos, maxPos;
-    public boolean obrig;
+    public boolean obrig = false;
+
+    public Rule(ObjectFile room, Point2 minPos, Point2 maxPos, boolean obrig) {
+      this.obrig = obrig;
+      this.minPos = minPos;
+      this.maxPos = maxPos;
+      this.room = room;
+    }
 
     public int probrabilidade(int x, int z) {
       if (x >= minPos.x && x <= maxPos.x && z >= minPos.y && z <= maxPos.y) {
@@ -18,16 +25,17 @@ public class dangeonGeration extends Component {
   }
 
   @Order(idx = -1)
-  public Point2 size = new Point2(5,5), offset = new Point2(65,65);
+  public Point2 size = new Point2(5, 5), offset = new Point2(65, 65);
   private int startPos = 0;
   public List<Cell> board;
   public ObjectFile room;
+  public ObjectFile[] roomRand = new ObjectFile[2];
   @Order(idx = 1)
   public VertexFile walls, doors, chao;
   private dangenBer roomber;
   private PerlinNoise noise;
   private int seed;
-  private Rule[] rooms = new Rule[2];
+  private Rule[] rooms;
   private Color[] cor;
   private UIRotateImage img;
   private SpatialObject myplayer;
@@ -44,10 +52,11 @@ public class dangeonGeration extends Component {
   }
 
   void repeat() {
-    img.setTexture(roomber.playermove(board, myplayer.position, size, offset, cor));
+    if (img != null) img.setTexture(roomber.playermove(board, myplayer.position, size, offset, cor));
   }
 
   public void gerationDange() {
+    rooms();
     StringBuilder name = new StringBuilder(size.x + size.y);
     for (int x = 0; x < size.x; x++) {
       for (int z = 0; z < size.y; z++) {
@@ -55,7 +64,21 @@ public class dangeonGeration extends Component {
 
         if (cellTmp.vision) {
           name.setLength(0);
+          /*int randomRoom = -1;
+          List<Integer> avalieRooms = new LinkedList<Integer>();
+          for (int i = 0; i < rooms.length; i++) {
+            int p = rooms[i].probrabilidade(x, z);
+            if (p == 2) {
+              randomRoom = i;
+              break;
+            } else if (p == 1) avalieRooms.add(i);
+          }
+          if (randomRoom == -1) {
+            if (avalieRooms.size() > 0) randomRoom = avalieRooms.get(Random.range(0, avalieRooms.size()));
+            else randomRoom = 0;
+          }*/
           SpatialObject newRoom = myObject.instantiate(room, new Vector3(x * offset.x, 0, z * offset.y));
+          // spawObj.spawObj(0, new Point2(), new Point3(1, 1, 1), cor[randomRoom], SpatialObject.loadFile(roomRand[randomRoom]), Vertex.loadPrimitive(0));
           name.append(x).append(" ").append(z);
           if (roomber != null) roomber.UpdateRoom(cellTmp.status, name.toString(), newRoom, walls, doors, (x == 0 && z == 0) ? cor[0] : (x == (size.x - 1) && z == (size.y - 1)) ? cor[2] : cor[3]);
           newRoom.setName(name.toString());
@@ -129,6 +152,10 @@ public class dangeonGeration extends Component {
 
     if ((cell % size.x) != 0 && !board.get(cell - 1).vision) neighbors.add(cell - 1);
     return neighbors;
+  }
+
+  private void rooms() {
+    rooms = new Rule[] {new Rule(roomRand[0], new Point2(), new Point2(5, 5), false), new Rule(roomRand[1], new Point2(), new Point2(3, 3), false)};
   }
 
   public void setSeed(int seed) {
