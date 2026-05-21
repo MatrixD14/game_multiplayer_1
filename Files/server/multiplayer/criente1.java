@@ -16,10 +16,10 @@ public class criente1 extends Component {
   private Vector3Buffer posCache, rotCache, posBufferCache, rotBufferCache;
   private Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
-  private SUIText txt;
+  private UITextView txt;
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
-  private dangeonGeration seedgera;
+ // private dangeonGeration seedgera;
 
   void start() {
     if (maxPlayer <= 0) maxPlayer = 10;
@@ -30,9 +30,9 @@ public class criente1 extends Component {
     rotCache = BufferUtils.createVector3Buffer(maxPlayer);
     posBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
-    txt = WorldController.findObject("Ip").findComponent("suitext");
+    txt = WorldController.findObject("Ip").findComponent("TextView");
     checkServe = myObject.findComponent("server1");
-    seedgera = WorldController.findObject("dangeon").findComponent("dangeonGeration");
+    //seedgera = WorldController.findObject("dangeon").findComponent("dangeonGeration");
   }
 
   void repeat() {
@@ -63,6 +63,7 @@ public class criente1 extends Component {
 
                 public void onCancel() {}
               });
+              
     }
     if (Input.isKeyDown("IP")) {
       InputDialog inputV =
@@ -124,7 +125,7 @@ public class criente1 extends Component {
           public void onEngine(Object result) {
             String msgResult = (String) result;
             Toast.showText(msgResult, 1);
-            Console.log(msgResult);
+            Terminal.log(msgResult);
             if (connected) {
               txt.setText("IP: " + socket.getInetAddress().getHostAddress());
               startListening();
@@ -155,7 +156,7 @@ public class criente1 extends Component {
           }
 
           public void onEngine(Object result) {
-            if (result != null && connected) Console.log(result.toString());
+            if (result != null && connected) Terminal.log(result.toString());
           }
         });
   }
@@ -198,8 +199,8 @@ public class criente1 extends Component {
 
     } else if (txt.startsWith("spaw:")) {
       handleSpawn(txt);
-    } else if (txt.startsWith("seed:")) {
-      handleSeed(txt);
+    /*} else if (txt.startsWith("seed:")) {
+      handleSeed(txt);*/
     } else if (txt.startsWith("pos:")) {
       protocolo.handlePos(txt, myId, posCache, remoteId, maxPlayer);
     } else if (txt.startsWith("rot:")) {
@@ -208,7 +209,7 @@ public class criente1 extends Component {
       handleLeft(txt);
     } else {
       Toast.showText(txt, 1);
-      Console.log(txt);
+      Terminal.log(txt);
     }
   }
 
@@ -263,7 +264,7 @@ public class criente1 extends Component {
         });
   }
 
-  public void handleSeed(String txt) {
+/* public void handleSeed(String txt) {
     final String[] p = txt.split(":");
     int id = Integer.parseInt(p[1]);
     if (id == myId) return;
@@ -272,7 +273,7 @@ public class criente1 extends Component {
           seedgera.setSeed(Integer.parseInt(p[2]));
           seedgera.armGerador();
         });
-  }
+  }*/
 
   void desconnect() {
     connected = false;
