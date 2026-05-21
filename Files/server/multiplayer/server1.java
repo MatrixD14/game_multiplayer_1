@@ -7,13 +7,13 @@ public class server1 extends Component {
   private Socket[] clients = new Socket[maxPlayer];
   private int[] clientId = new int[maxPlayer];
   private String[] clientName = new String[maxPlayer];
-  private int geraSeed;
+//  private int geraSeed;
 
   void repeat() {
     if (Input.isKeyDown("serv")) {
       if (running) stop();
       else play();
-      geraSeed = Random.range(100, 999);
+     // geraSeed = Random.range(100, 999);
     }
   }
 
@@ -23,7 +23,7 @@ public class server1 extends Component {
       return;
     }
     running = true;
-    Console.log("Iniciando servidor na porta " + port);
+    Terminal.log("Iniciando servidor na porta " + port);
     Toast.showText("Iniciando servidor na porta " + port, 1);
 
     new AsyncTask(
@@ -42,7 +42,7 @@ public class server1 extends Component {
                   }
                   clients[slot] = client;
                   clientId[slot] = slot + 1;
-                  Console.log("Cliente conectado: " + client.getInetAddress());
+                  Terminal.log("Cliente conectado: " + client.getInetAddress());
                   Toast.showText("Cliente conectado: " + client.getInetAddress(), 1);
 
                   new AsyncTask(
@@ -58,12 +58,12 @@ public class server1 extends Component {
                 } catch (SocketException se) {
                   break;
                 } catch (IOException ioe) {
-                  Console.log("Accept erro: " + ioe.getMessage());
+                  Terminal.log("Accept erro: " + ioe.getMessage());
                   Toast.showText("Accept erro: " + ioe.getMessage(), 1);
                 }
               }
             } catch (Exception e) {
-              Console.log("Erro servidor: " + e.getMessage());
+              Terminal.log("Erro servidor: " + e.getMessage());
               Toast.showText("Erro servidor: " + e.getMessage(), 1);
             }
             return null;
@@ -82,7 +82,7 @@ public class server1 extends Component {
     try {
       if (server != null && !server.isClosed()) server.close();
     } catch (IOException e) {
-      Console.log("Erro ao fechar ServerSocket: " + e.getMessage());
+      Terminal.log("Erro ao fechar ServerSocket: " + e.getMessage());
     }
 
     for (int i = 0; i < maxPlayer; i++) {
@@ -96,7 +96,7 @@ public class server1 extends Component {
         clientName[i] = null;
       }
     }
-    Console.log("Servidor parado e clientes desconectados.");
+    Terminal.log("Servidor parado e clientes desconectados.");
     Toast.showText("Servidor parado!", 1);
   }
 
@@ -119,9 +119,9 @@ public class server1 extends Component {
           clientName[slot] = nome;
           sbId.append("id:").append(clientId[slot]);
           sendClient(client, sbId.toString());
-          spaw.setLength(0);
-          spaw.append("seed:0:").append(geraSeed);
-          sendClient(client, spaw.toString());
+         // spaw.setLength(0);
+         // spaw.append("seed:0:").append(geraSeed);
+        //  sendClient(client, spaw.toString());
           for (int i = 0; i < maxPlayer; i++) {
             if (clients[i] != null && i != slot && clientId[i] != 0 && clientName[i] != null) {
               exists.setLength(0);
@@ -139,7 +139,7 @@ public class server1 extends Component {
         else broadcast(line, client);
       }
     } catch (Exception e) {
-      Console.log("Erro client: " + e.getMessage());
+      Terminal.log("Erro client: " + e.getMessage());
     } finally {
       if (clientId[slot] != 0) broadcast("left:" + clientId[slot], null);
       try {
@@ -149,7 +149,7 @@ public class server1 extends Component {
       clients[slot] = null;
       clientId[slot] = 0;
       clientName[slot] = null;
-      Console.log("Cliente desconectado: " + slot);
+      Terminal.log("Cliente desconectado: " + slot);
     }
   }
 
@@ -177,7 +177,7 @@ public class server1 extends Component {
         out.write(data);
         out.flush();
       } catch (Exception e) {
-        Console.log("Erro broadcast: " + e.getMessage());
+        Terminal.log("Erro broadcast: " + e.getMessage());
         try {
           s.close();
         } catch (Exception es) {
