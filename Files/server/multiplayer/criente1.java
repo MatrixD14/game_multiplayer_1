@@ -16,7 +16,7 @@ public class criente1 extends Component {
   private Vector3Buffer posCache, rotCache, posBufferCache, rotBufferCache;
   private Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
-  private UITextView txt;
+  public UITextView txt;
   private server1 checkServe;
   private handleProtocolo protocolo = new handleProtocolo();
  // private dangeonGeration seedgera;
@@ -30,7 +30,7 @@ public class criente1 extends Component {
     rotCache = BufferUtils.createVector3Buffer(maxPlayer);
     posBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
     rotBufferCache = BufferUtils.createVector3Buffer(maxPlayer);
-    txt = WorldController.findObject("Ip").findComponent("TextView");
+    //txt = WorldController.findObject("Ip").findComponent("UITextView");
     checkServe = myObject.findComponent("server1");
     //seedgera = WorldController.findObject("dangeon").findComponent("dangeonGeration");
   }
